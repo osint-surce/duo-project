@@ -11,7 +11,6 @@ class Event(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена от")
     description = models.TextField(blank=True, verbose_name="Описание")
     
-    # Изображение
     image = models.ImageField(
         upload_to='events/', 
         blank=True, 
@@ -34,7 +33,6 @@ class Event(models.Model):
     def __str__(self):
         return f"{self.artist} — {self.title}"
 
-    # Полезный метод для фронта
     @property
     def image_url(self):
         if self.image:
