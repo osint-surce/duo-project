@@ -1,0 +1,19 @@
+<svg viewBox="0 0 310 67" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="310.000000" height="67.000000" fill="none" customFrame="#000000">
+	<defs>
+		<g id="pixso_custom_effect_0">
+			<effect x="0.000000" y="4.000000" visibility="visible" fill="rgb(0,0,0)" fill-opacity="0.25" effectType="dropShadow" stdDeviation="4" radius="0" />
+		</g>
+		<filter id="filter_0" width="310.000000" height="67.000000" x="0.000000" y="0.000000" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_0)" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feOffset dx="0.000000" dy="4.000000" in="SourceAlpha" />
+			<feGaussianBlur stdDeviation="1.33333337" />
+			<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0 " />
+			<feBlend result="effect_dropShadow_1" in2="BackgroundImageFix" mode="normal" />
+			<feBlend result="shape" in="SourceGraphic" in2="effect_dropShadow_1" mode="normal" />
+		</filter>
+	</defs>
+	<g filter="url(#filter_0)">
+		<path id="Прямоугольник 11" d="M13 1L297 1C301.418 1 305 4.58172 305 9L305 50C305 54.4183 301.418 58 297 58L13 58C8.58172 58 5 54.4183 5 50L5 9C5 4.58172 8.58172 1 13 1Z" fill="rgb(249,248,248)" fill-rule="evenodd" />
+		<path id="Прямоугольник 11" d="M13 1L297 1C301.418 1 305 4.58172 305 9L305 50C305 54.4183 301.418 58 297 58L13 58C8.58172 58 5 54.4183 5 50L5 9C5 4.58172 8.58172 1 13 1ZM13 2Q11.5503 2 10.3128 2.51256L10.3128 2.51257Q9.07538 3.02513 8.05025 4.05025Q7.02513 5.07538 6.51256 6.31281L6.51256 6.31282Q6 7.55025 6 9L6 50C6 51.933 6.68342 53.5829 8.05025 54.9497Q9.07538 55.9749 10.3128 56.4874Q11.5503 57 13 57L297 57C298.933 57 300.583 56.3166 301.95 54.9497Q302.975 53.9247 303.487 52.6873Q304 51.4498 304 50L304 9Q304 7.55016 303.487 6.31266Q302.975 5.07531 301.95 4.05025C300.583 2.68342 298.933 2 297 2L13 2Z" fill="rgb(26,246,247)" fill-rule="evenodd" />
+	</g>
+</svg>
