@@ -24,7 +24,7 @@ class Event(models.Model):
     class Meta:
         verbose_name = "Мероприятие"
         verbose_name_plural = "Мероприятия"
-        ordering = ['-date']          # Новые сверху
+        ordering = ['-date']         
         indexes = [
             models.Index(fields=['date']),
             models.Index(fields=['is_active']),
