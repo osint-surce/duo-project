@@ -1,0 +1,142 @@
+{% extends 'tickets/base.html' %}
+{% load static %}
+
+{% block title %}Корзина — Scream & Tickets{% endblock %}
+
+{% block extra_css %}
+<style>
+  .page-wrap { max-width: 760px; margin: 0 auto; padding: 40px 24px; }
+  .page-title { font-size: 28px; font-weight: 700; margin-bottom: 32px; }
+
+  .cart-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px; }
+
+  .cart-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid #eee;
+    border-radius: 16px;
+    padding: 16px 20px;
+  }
+  .cart-item-img {
+    width: 72px;
+    height: 72px;
+    border-radius: 12px;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
+
+  .cart-item-info { flex: 1; }
+  .cart-item-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .cart-item-meta { font-size: 13px; color: #777; }
+
+  .cart-item-price { font-size: 18px; font-weight: 700; white-space: nowrap; }
+
+  .cart-item-remove {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #bbb;
+    padding: 4px;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+  .cart-item-remove:hover { color: #e53e3e; }
+
+  .cart-summary {
+    border: 1px solid #eee;
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 15px;
+    padding: 8px 0;
+    color: #555;
+  }
+  .summary-row.total {
+    border-top: 1px solid #eee;
+    margin-top: 8px;
+    padding-top: 16px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #000;
+  }
+  .checkout-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    font-size: 16px;
+    border-radius: 12px;
+  }
+
+  .cart-empty {
+    text-align: center;
+    padding: 80px 0;
+    color: #888;
+  }
+  .cart-empty p { font-size: 18px; margin-bottom: 20px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+  <h1 class="page-title">Корзина</h1>
+
+  {% if cart_items %}
+  <div class="cart-list">
+    {% for item in cart_items %}
+    <div class="cart-item">
+      <div class="cart-item-img">
+        {% if item.event.image %}
+          <img src="{{ item.event.image.url }}" alt="{{ item.event.title }}">
+        {% else %}
+          🎵
+        {% endif %}
+      </div>
+      <div class="cart-item-info">
+        <div class="cart-item-title">{{ item.event.title }}</div>
+        <div class="cart-item-meta">📅 {{ item.event.date|date:"d M Y, H:i" }}</div>
+        <div class="cart-item-meta">📍 {{ item.event.city.name }}, {{ item.event.venue }}</div>
+        <div class="cart-item-meta">{{ item.quantity }} шт. × {{ item.event.price }} ₽</div>
+      </div>
+      <div class="cart-item-price">{{ item.total_price }} ₽</div>
+      <form method="post" action="{% url 'tickets:remove_from_cart' item.id %}">
+        {% csrf_token %}
+        <button class="cart-item-remove" type="submit" title="Удалить">×</button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="cart-summary">
+    <div class="summary-row">
+      <span>Билетов</span>
+      <span>{{ cart_items|length }} шт.</span>
+    </div>
+    <div class="summary-row total">
+      <span>Итого</span>
+      <span>{{ total }} ₽</span>
+    </div>
+    <form method="post" action="{% url 'tickets:checkout' %}">
+      {% csrf_token %}
+      <button class="btn btn-primary checkout-btn" type="submit">Оплатить</button>
+    </form>
+  </div>
+
+  {% else %}
+  <div class="cart-empty">
+    <p>Корзина пуста</p>
+    <a href="{% url 'tickets:index' %}" class="btn btn-primary">Найти мероприятие</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

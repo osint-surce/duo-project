@@ -1,0 +1,221 @@
+{% extends 'tickets/base.html' %}
+{% load static %}
+
+{% block title %}Scream & Tickets — Билеты на концерты и мероприятия{% endblock %}
+
+{% block extra_css %}
+<style>
+  .hero {
+    background: #f7f7f7;
+    padding: 48px 40px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .hero h1 {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.2;
+    max-width: 480px;
+  }
+  .hero p {
+    font-size: 16px;
+    color: #555;
+    margin-top: 12px;
+  }
+
+  .filters {
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #eee;
+  }
+  .filter-btn {
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    cursor: pointer;
+    background: #fff;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover { background: #f5f5f5; }
+  .filter-btn.active { background: #000; color: #fff; border-color: #000; }
+
+  .city-select {
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    margin-left: auto;
+  }
+
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    padding: 32px 40px;
+  }
+
+  .event-card {
+    border: 1px solid #eee;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    background: #fff;
+  }
+  .event-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+  }
+  .event-card-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+  }
+  .event-card-img img { width: 100%; height: 100%; object-fit: cover; }
+
+  .event-card-body { padding: 16px; }
+  .event-card-category {
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .event-card-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .event-card-meta {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 4px;
+  }
+  .event-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #f0f0f0;
+  }
+  .event-price {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .event-actions { display: flex; gap: 8px; }
+  .btn-fav {
+    background: transparent;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .btn-fav:hover { background: #f5f5f5; }
+
+  .no-events {
+    text-align: center;
+    padding: 80px 40px;
+    color: #888;
+    font-size: 18px;
+    grid-column: 1/-1;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div>
+    <h1>Лучшие мероприятия<br>в твоём городе</h1>
+    <p>Концерты, стендапы, спорт и многое другое</p>
+  </div>
+</section>
+
+<div class="filters">
+  <a href="{% url 'tickets:index' %}">
+    <button class="filter-btn {% if active_category == 'all' %}active{% endif %}">Все</button>
+  </a>
+  {% for category in categories %}
+  <a href="{% url 'tickets:index' %}?category={{ category.slug }}">
+    <button class="filter-btn {% if active_category == category.slug %}active{% endif %}">{{ category.name }}</button>
+  </a>
+  {% endfor %}
+
+  <form method="get" action="{% url 'tickets:index' %}" style="margin-left: auto;">
+    {% if active_category != 'all' %}
+      <input type="hidden" name="category" value="{{ active_category }}">
+    {% endif %}
+    <select name="city" class="city-select" onchange="this.form.submit()">
+      <option value="">Все города</option>
+      {% for city in cities %}
+        <option value="{{ city.id }}" {% if request.GET.city == city.id|stringformat:'s' %}selected{% endif %}>
+          {{ city.name }}
+        </option>
+      {% endfor %}
+    </select>
+  </form>
+</div>
+
+<div class="events-grid">
+  {% for event in events %}
+  <div class="event-card">
+    <div class="event-card-img">
+      {% if event.image %}
+        <img src="{{ event.image.url }}" alt="{{ event.title }}">
+      {% else %}
+        🎵
+      {% endif %}
+    </div>
+    <div class="event-card-body">
+      <div class="event-card-category">{{ event.category.name }}</div>
+      <div class="event-card-title">{{ event.title }}</div>
+      <div class="event-card-meta">📅 {{ event.date|date:"d M Y, H:i" }}</div>
+      <div class="event-card-meta">📍 {{ event.city.name }}, {{ event.venue }}</div>
+      <div class="event-card-meta" style="color: {% if event.tickets_left < 10 %}#e53e3e{% else %}#38a169{% endif %}">
+        🎟 Осталось билетов: {{ event.tickets_left }}
+      </div>
+      <div class="event-card-footer">
+        <div class="event-price">{{ event.price }} ₽</div>
+        <div class="event-actions">
+          {% if user.is_authenticated %}
+          <form method="post" action="{% url 'tickets:toggle_favorite' event.id %}">
+            {% csrf_token %}
+            <button class="btn-fav" type="submit" title="В избранное">♡</button>
+          </form>
+          <form method="post" action="{% url 'tickets:add_to_cart' event.id %}">
+            {% csrf_token %}
+            <button class="btn btn-primary" type="submit" {% if not event.is_available %}disabled{% endif %}>
+              {% if event.is_available %}Купить{% else %}Нет билетов{% endif %}
+            </button>
+          </form>
+          {% else %}
+          <a href="{% url 'tickets:login' %}" class="btn btn-primary">Купить</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="no-events">Мероприятий не найдено</div>
+  {% endfor %}
+</div>
+{% endblock %}

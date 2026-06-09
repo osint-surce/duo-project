@@ -1,0 +1,79 @@
+{% extends 'tickets/base.html' %}
+{% load static %}
+
+{% block title %}Регистрация — Scream & Tickets{% endblock %}
+
+{% block extra_css %}
+<style>
+  .auth-wrap {
+    min-height: calc(100vh - 64px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    background: #f7f7f7;
+  }
+  .auth-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid #eee;
+  }
+  .auth-title { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+  .auth-subtitle { font-size: 14px; color: #777; margin-bottom: 28px; }
+  .form-group { margin-bottom: 16px; }
+  .form-label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; font-weight: 500; }
+  .form-input, .form-select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+    background: #fff;
+  }
+  .form-input:focus, .form-select:focus { border-color: #000; }
+  .submit-btn { width: 100%; padding: 13px; font-size: 16px; border-radius: 10px; margin-top: 8px; }
+  .auth-link { text-align: center; margin-top: 20px; font-size: 14px; color: #777; }
+  .auth-link a { color: #000; font-weight: 600; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <h1 class="auth-title">Создать аккаунт</h1>
+    <p class="auth-subtitle">Зарегистрируйтесь чтобы покупать билеты</p>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Электронная почта</label>
+        <input class="form-input" type="email" name="email" placeholder="example@mail.ru" required autofocus>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Пароль</label>
+        <input class="form-input" type="password" name="password" placeholder="Минимум 8 символов" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Город</label>
+        <select class="form-select" name="city">
+          <option value="">Выберите город</option>
+          {% for city in cities %}
+            <option value="{{ city.id }}">{{ city.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary submit-btn">Зарегистрироваться</button>
+    </form>
+
+    <div class="auth-link">
+      Уже есть аккаунт? <a href="{% url 'tickets:login' %}">Войти</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
