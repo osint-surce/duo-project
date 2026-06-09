@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Scream & Tickets{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/font.css' %}">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter-Regular', sans-serif; background: #fff; color: #000; }
+    a { text-decoration: none; color: inherit; }
+
+    /* Навбар */
+    .navbar {
+      display: flex;
+      align-items: center;
+      padding: 0 40px;
+      height: 64px;
+      border-bottom: 1px solid #eee;
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 100;
+    }
+    .navbar-logo {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-right: 40px;
+    }
+    .navbar-links {
+      display: flex;
+      gap: 24px;
+      flex: 1;
+    }
+    .navbar-links a {
+      font-size: 14px;
+      color: #555;
+      transition: color 0.2s;
+    }
+    .navbar-links a:hover, .navbar-links a.active { color: #000; }
+    .navbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+    }
+    .btn-primary { background: #000; color: #fff; }
+    .btn-primary:hover { background: #222; }
+    .btn-outline { background: transparent; border: 1px solid #ddd; color: #000; }
+    .btn-outline:hover { background: #f5f5f5; }
+    .cart-icon {
+      position: relative;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .cart-count {
+      position: absolute;
+      top: -6px;
+      right: -8px;
+      background: #000;
+      color: #fff;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Сообщения */
+    .messages { padding: 12px 40px 0; }
+    .message {
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    .message.success { background: #d4edda; color: #155724; }
+    .message.error { background: #f8d7da; color: #721c24; }
+  </style>
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="{% url 'tickets:index' %}" class="navbar-logo">Scream &amp; tickets</a>
+  <div class="navbar-links">
+    <a href="{% url 'tickets:index' %}?category=concerts" {% if active_category == 'concerts' %}class="active"{% endif %}>Концерты</a>
+    <a href="{% url 'tickets:index' %}?category=standups" {% if active_category == 'standups' %}class="active"{% endif %}>Стендапы</a>
+    <a href="{% url 'tickets:index' %}?category=sales" {% if active_category == 'sales' %}class="active"{% endif %}>Акции</a>
+    <a href="{% url 'tickets:index' %}?category=sport" {% if active_category == 'sport' %}class="active"{% endif %}>Спорт</a>
+    <a href="#">Ещё</a>
+  </div>
+  <div class="navbar-right">
+    {% if user.is_authenticated %}
+      <a href="{% url 'tickets:cart' %}" class="cart-icon">
+        🛒
+        {% with count=user.cart_items.count %}
+          {% if count > 0 %}<span class="cart-count">{{ count }}</span>{% endif %}
+        {% endwith %}
+      </a>
+      <a href="{% url 'tickets:profile' %}" class="btn btn-outline">Профиль</a>
+      <a href="{% url 'tickets:logout' %}" class="btn btn-outline">Выйти</a>
+    {% else %}
+      <a href="{% url 'tickets:login' %}" class="btn btn-outline">Войти</a>
+      <a href="{% url 'tickets:register' %}" class="btn btn-primary">Регистрация</a>
+    {% endif %}
+  </div>
+</nav>
+
+{% if messages %}
+<div class="messages">
+  {% for message in messages %}
+    <div class="message {{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% block content %}{% endblock %}
+
+<script src="{% static 'js/animation.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
